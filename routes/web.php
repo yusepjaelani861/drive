@@ -26,12 +26,13 @@ Route::group(['middleware' => 'auth'], function (){
     Route::get('/files', [FilesController::class, 'index'])->name('files.index');
     Route::get('/files/list', [FilesController::class, 'list'])->name('files.list');
     Route::post('/files/upload', [FilesController::class, 'store'])->name('files.upload');
-    Route::get('/files/download/{short_url}', [FilesController::class, 'downloadFile'])->name('files.download');
 });
-
-Route::get('/files/{short_url}', [FilesController::class, 'getFile'])->name('files.get');
+// Route::get('/view/{short_url}', [FilesController::class, 'getFile'])->name('files.get');
 
 Route::get('/info', function () {
     phpinfo();
 });
+Route::get('/download/{short_url}', [FilesController::class, 'download'])->name('files.download');
+Route::get('/view/{short_url}', [FilesController::class, 'view'])->name('files.view');
+
 require __DIR__.'/auth.php';
