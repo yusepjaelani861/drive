@@ -25,7 +25,8 @@ Route::get('/dashboard', function () {
 Route::group(['middleware' => 'auth'], function (){
     Route::get('/files', [FilesController::class, 'index'])->name('files.index');
     Route::get('/files/list', [FilesController::class, 'list'])->name('files.list');
-    Route::post('/files/upload', [FilesController::class, 'store'])->name('files.upload');
+    Route::post('/files/upload', [FilesController::class, 'multistore'])->name('files.upload');
+    Route::post('/files/delete/{short_url}', [FilesController::class, 'delete'])->name('files.delete');
 });
 // Route::get('/view/{short_url}', [FilesController::class, 'getFile'])->name('files.get');
 
@@ -34,5 +35,6 @@ Route::get('/info', function () {
 });
 Route::get('/download/{short_url}', [FilesController::class, 'download'])->name('files.download');
 Route::get('/view/{short_url}', [FilesController::class, 'view'])->name('files.view');
+Route::get('/get/{short_url}', [FilesController::class, 'get'])->name('files.get');
 
 require __DIR__.'/auth.php';

@@ -15,6 +15,25 @@ class FilesController extends Controller
         return view('files.upload');
     }
 
+    public function get(Request $request)
+    {
+        $file = Files::where('short_url', $request->short_url)->first();
+        if ($file == null) {
+            return redirect('/');
+        } else {
+        $url = $file->original_url;
+
+        $file->increment('download_count', 1);
+
+        return response()->streamDownload(function () use ($file, $url) {
+            header('Content-Type: '.$file->mime_type);
+            header('Content-Length: '.$file->size);
+            header('Content-Disposition: attachment; filename="'.$file->title);
+            readfile($url);
+        }, $file->title);
+        }
+    }
+
     public function list()
     {
         $user = Auth::user();
@@ -25,19 +44,63 @@ class FilesController extends Controller
     public function view(Request $request)
     {
         $file = Files::where('short_url', $request->short_url)->first();
-        $files = Files::all()->take(4);
+        $background_colors = array('#282E33', '#25373A', '#164852', '#495E67', '#FF3838');
+        $count = count($background_colors) - 1;
+        $i = rand(0, $count);
+        $rand_background = $background_colors[$i];
+        
+        $files = Files::paginate(8);
 
-        return view('files.view', compact('file', 'files'));
+        return view('files.view', compact('file', 'rand_background', 'files'));
     }
 
     public function download(Request $request)
     {
         $file = Files::where('short_url', $request->short_url)->first();
-        $file->increment('download_count', 1);
-        return Storage::disk('ftp')->download('get/' . $file->title, $file->title);
-        // return redirect($file->original_url);
-        // return Storage::disk('ftp')->download('get/' . $file->title);
+	$header = [
+            'Content-Type' => $file->mime_type,
+            'Content-Disposition' => 'attachment; filename="' . $file->title . '"',
+            'Accept' => '*/*',
+        ];
 
+        $file->increment('download_count');
+        // return Storage::disk('ftp')->download('get/' . $file->title, $file->title);
+        // return redirect($file->original_url);
+	$client = new \GuzzleHttp\Client();
+        $response = $client->request('GET', $file->original_url, [
+            'headers' => $header,
+        ]);
+        return $response->getBody();
+    }
+
+    public function multistore(Request $request)
+    {
+        $files = $request->file();
+        $user = Auth::user();
+        $count = 0;
+        foreach ($files as $file) {
+            $filename = $file->getClientOriginalName();
+            $extension = $file->getClientOriginalExtension();
+            $mime_type = $file->getMimeType();
+            $size = $file->getSize();
+            $short_url = substr(md5(microtime()), rand(0, 26), 5);
+            $original_url = 'https://cdn.mitehost.my.id/'.Storage::disk('ftp')->putFileAs('get', $file, $short_url . '.' . $extension);
+            $file = Files::create([
+                'user_id' => $user->id,
+                'title' => $filename,
+                'short_url' => $short_url,
+                'original_url' => $original_url,
+                'mime_type' => $mime_type,
+                'size' => $size,
+                'extension' => $extension,
+            ]);
+            $count++;
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Uploaded ' . $count . ' files successfully',
+        ]);
     }
 
     public function store(Request $request)
@@ -77,6 +140,55 @@ class FilesController extends Controller
                 'error' => 'No file selected',
                 'message' => 'Please select a file',
             ]);
+        }
+    }
+
+    public function delete(Request $request)
+    {
+        $file = Files::where('short_url', $request->short_url)->first();
+        $data = Storage::disk('ftp')->delete('get/' . $file->title);
+        $file->delete();
+
+        return redirect()->route('files.list');
+    }
+
+    public function getFile(Request $request)
+    {
+        $file = Files::where('short_url', $request->short_url)->first();
+        if ($file) {
+            $header = [
+                'Content-Type' => $file->mime_type,
+                'Content-Disposition' => 'inline; filename="' . $file->title . '"',
+                'Content-Transfer-Encoding' => 'binary',
+                'Content-Length' => $file->size,
+            ];
+
+            Files::where('short_url', $request->short_url)->increment('download_count');
+            if ($file->mime_type == 'audio/mpeg') {
+                return view('files.embed', compact('file'));
+            } else if ($file->mime_type == 'video/mp4') {
+                return view('files.embed', compact('file'));
+            } else if ($file->mime_type == 'image/png') {
+                return view('files.embed', compact('file'));
+            } else {
+                return Storage::disk('ftp')->download('get/' . $file->short_url, $file->title, $header);
+            }
+
+        } else {
+            return response()->json(['error' => 'File not found']);
+        }
+    }
+
+    public function downloadFile(Request $request)
+    {
+        $file = Files::where('short_url', $request->short_url)->first();
+        if ($file) {
+            
+            $url = $file->original_url;
+            $file->increment('download_count', 1);
+            return Storage::disk('ftp')->download('get/' . $file->short_url, $file->title);
+        } else {
+            return response()->json(['error' => 'File not found']);
         }
     }
 }

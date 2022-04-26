@@ -16,7 +16,7 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
                     <x-nav-link :href="route('files.index')" :active="request()->routeIs('files.index')">
-                        {{ __('Files') }}
+                        {{ __('Upload Files') }}
                     </x-nav-link>
                     <x-nav-link :href="route('files.list')" :active="request()->routeIs('files.list')">
                         {{ __('File Lists') }}
@@ -71,6 +71,12 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('files.index')" :active="request()->routeIs('files.index')">
+                {{ __('Upload Files') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('files.list')" :active="request()->routeIs('files.list')">
+                {{ __('File Lists') }}
             </x-responsive-nav-link>
         </div>
 
