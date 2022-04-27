@@ -46,4 +46,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Files::class);
     }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
 }

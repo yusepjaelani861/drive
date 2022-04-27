@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\FilesController;
+use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,14 +28,14 @@ Route::group(['middleware' => 'auth'], function (){
     Route::get('/files/list', [FilesController::class, 'list'])->name('files.list');
     Route::post('/files/upload', [FilesController::class, 'multistore'])->name('files.upload');
     Route::post('/files/delete/{short_url}', [FilesController::class, 'delete'])->name('files.delete');
-});
-// Route::get('/view/{short_url}', [FilesController::class, 'getFile'])->name('files.get');
 
-Route::get('/info', function () {
-    phpinfo();
+    // Blog Post
+    Route::get('/post/create', [PostController::class, 'create_page'])->name('post.create');
+    Route::post('/post/create', [PostController::class, 'create'])->name('create.post');
 });
-Route::get('/download/{short_url}', [FilesController::class, 'download'])->name('files.download');
+
 Route::get('/view/{short_url}', [FilesController::class, 'view'])->name('files.view');
 Route::get('/get/{short_url}', [FilesController::class, 'get'])->name('files.get');
+Route::get('/embed/{short_url}', [FilesController::class, 'embed'])->name('files.embed');
 
 require __DIR__.'/auth.php';

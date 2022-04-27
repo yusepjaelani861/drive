@@ -35,7 +35,7 @@
                                     File Type
                                 </th>
                                 <th scope="col" class="px-6 py-3">
-                                    Link Download
+                                    Link Embed
                                 </th>
                                 <th scope="col" class="px-6 py-3">
                                     <span class="sr-only">Edit</span>
@@ -62,7 +62,13 @@
                                     {{ $files->mime_type }}
                                 </td>
                                 <td class="px-6 py-4">
-                                    {{ $files->original_url }}
+                                    @if ($files->extension == 'mp4' || $files->extension == 'webm' || $files->extension == 'ogg')
+                                    <a href="{{ route('files.embed', $files->short_url) }}" target="_blank">
+                                    {{ route('files.embed', $files->short_url) }}</a>
+                                    @else 
+                                    <a href="{{ route('files.view', $files->short_url) }}" target="_blank">
+                                    {{ route('files.view', $files->short_url) }}</a>
+                                    @endif
                                 </td>
                                 <td class="flex px-6 py-4 text-right">
                                     <!-- Download Button -->

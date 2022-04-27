@@ -3,7 +3,7 @@
   <a href="/">
   <div class="flex items-center flex-shrink-0 text-white mr-6">
     <svg class="fill-current h-8 w-8 mr-2" width="54" height="54" viewBox="0 0 54 54" xmlns="http://www.w3.org/2000/svg"><path d="M13.5 22.1c1.8-7.2 6.3-10.8 13.5-10.8 10.8 0 12.15 8.1 17.55 9.45 3.6.9 6.75-.45 9.45-4.05-1.8 7.2-6.3 10.8-13.5 10.8-10.8 0-12.15-8.1-17.55-9.45-3.6-.9-6.75.45-9.45 4.05zM0 38.3c1.8-7.2 6.3-10.8 13.5-10.8 10.8 0 12.15 8.1 17.55 9.45 3.6.9 6.75-.45 9.45-4.05-1.8 7.2-6.3 10.8-13.5 10.8-10.8 0-12.15-8.1-17.55-9.45-3.6-.9-6.75.45-9.45 4.05z"/></svg>
-    <span class="font-semibold text-xl tracking-tight">Drive MiteWP</span>
+    <span class="font-semibold text-xl tracking-tight">Savefileku</span>
   </div>
   </a>
   <div class="block lg:hidden">
@@ -70,7 +70,7 @@
             </form>
             
             <div id="downloadFile" class="text-center mb-6">
-                <a id="DownloadBtn" href="https://server1.mitewp.com/get/{{ $file->short_url }}" onclick="parent.open('https://marketingabsentremembered.com/ra61qgwp?key=fcb9030dd3ffd9d7396df51bb49b11bd')" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-ls px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                <a id="DownloadBtn" href="https://cdn.savefileku.my.id/get/{{ $file->short_url }}" onclick="parent.open('https://marketingabsentremembered.com/ra61qgwp?key=fcb9030dd3ffd9d7396df51bb49b11bd')" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-ls px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                     Download
                 </a>
             </div>
@@ -143,7 +143,7 @@
 <script>
 	function Download()
     {
-        var url = "https://server1.mitewp.com/get/{{ $file->short_url }}";
+        var url = "https://cdn.savefileku.my.id/get/{{ $file->short_url }}";
         window.location.href = url;
     }
 
@@ -173,7 +173,7 @@
                     clearInterval(CountdownInterval);
                     btn.classList.remove('cursor-not-allowed');
                     btn.classList.remove('hidden');
-                    btn.href = 'https://drive.mitewp.com/get/{{ $file->short_url }}';
+                    btn.href = 'https://cdn.savefileku.my.id/get/{{ $file->short_url }}';
                     btn.text = 'Download';
                 }
             }, 1000);
